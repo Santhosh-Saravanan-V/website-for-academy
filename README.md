@@ -2,54 +2,75 @@
 
 A modern, responsive business website for "BrightPath Academy" with an integrated AI chatbot, built using Next.js, Tailwind CSS, and Vercel AI SDK.
 
-## Features
-- **Modern UI**: Clean, professional design with Tailwind CSS.
-- **Mobile-First**: Fully responsive layout.
-- **AI Chatbot**: Integrated floating chatbot powered by OpenAI/Gemini (via Vercel AI SDK).
-- **Pages**: Home, Courses, About Us, Contact.
-- **Components**: Navbar, Footer, WhatsApp Button, Testimonials, FAQ.
+## Key Features
 
-## Tech Stack
-- Next.js 14+ (App Router)
-- Tailwind CSS
-- Lucide React (Icons)
-- Framer Motion (Animations)
-- Vercel AI SDK (@ai-sdk/openai, @ai-sdk/react)
+### 1. Modern Web Design
+- **Technology**: Built with Next.js 14 (App Router) & Tailwind CSS.
+- **Responsive**: Fully mobile-first design ensuring great experience on all devices.
+- **Pages**: Home, Courses, About Us, Contact.
+- **Components**: Polished UI components including Testimonials, FAQ Accordion, and Floating Buttons.
+
+### 2. AI Enquiry Chatbot (Smart Assistant)
+- **Strict Business Logic**: The chatbot is engineered to answer questions **only** based on the provided institute data. It will politey decline unrelated queries (e.g., "General knowledge", "Coding help").
+- **Lead Generation**: Detects user interest (e.g., "I want to join", "Fee structure") and proactively asks for:
+  - Full Name
+  - Phone Number
+  - Course of Interest
+- **Anti-Hallucination**: If the answer isn't in its database, it admits "I don't know" and directs the user to official contacts, rather than making up facts.
+
+### 3. Contact Integration
+- **WhatsApp**: Floating button for instant direct messaging.
+- **Contact Form**: Functional frontend form with validation states.
+
+---
+
+## Restrictions & Limitations
+
+### 1. AI Model Constraints (Free Tier)
+- **Model Used**: `meta-llama/llama-3.3-70b-instruct:free` (via OpenRouter).
+- **Rate Limits**: Since we are using a **free API tier**, you may occasionally encounter `429 Too Many Requests` errors if many requests are sent rapidly.
+- **Solution**: For production, switch to a paid OpenAI (`gpt-4o`) or Gemini API key to remove these limits.
+
+### 2. Context Window
+- The chatbot has a limited "memory" of the conversation. Very long conversations may result in the bot forgetting earlier details.
+
+### 3. Knowledge Base
+- The bot *only* knows what is defined in `src/lib/institute-data.ts`. It does not have real-time internet access or knowledge outside this file.
+
+---
 
 ## Setup Instructions
 
-1.  **Clone the repository** (if not already done).
+1.  **Clone the repository**.
 2.  **Install dependencies**:
     ```bash
     npm install
+    # If errors occur, try: npm install --legacy-peer-deps
     ```
-    *Note: If you encounter dependency conflicts, try `npm install --legacy-peer-deps`.*
 
 3.  **Environment Variables**:
-    Create a `.env.local` file in the root directory and add your OpenAI API Key:
+    Create a `.env.local` file in the root directory and add your OpenRouter/OpenAI API Key:
     ```env
-    OPENAI_API_KEY=sk-your-openai-api-key-here
+    OPENAI_API_KEY=sk-or-v1-your-api-key-here
     ```
+    *(Note: We use the OpenAI SDK compatibility layer for OpenRouter)*
 
 4.  **Run Development Server**:
     ```bash
     npm run dev
     ```
-    Open [http://localhost:3000](http://localhost:3000) to view the site.
+    Open [http://localhost:3000](http://localhost:3000).
 
 ## Deployment
 
 Recommended deployment is via **Vercel**.
 
-1.  Push your code to a GitHub repository.
-2.  Import the project in Vercel.
-3.  Add the `OPENAI_API_KEY` in Vercel Project Settings > Environment Variables.
+1.  Push code to GitHub.
+2.  Import project in Vercel.
+3.  Add `OPENAI_API_KEY` in Vercel Environment Variables.
 4.  Deploy.
 
 ## Project Structure
-- `src/app`: Page routes and API endpoints.
-- `src/components`: Reusable UI components.
-- `src/lib`: Utility functions and institute data.
-
-## AI Chatbot
-The chatbot uses `src/app/api/chat/route.ts` to communicate with OpenAI. The system prompt is defined in `src/lib/institute-data.ts` context injection within the route.
+- `src/app/api/chat/route.ts`: API handler for AI logic (System Prompt defined here).
+- `src/lib/institute-data.ts`: The "Brain" of the institute (Values, Courses, Fees).
+- `src/components/Chatbot.tsx`: The floating UI widget.
